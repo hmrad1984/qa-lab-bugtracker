@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: bugtracker-db
+    restart: always
+    environment:
+      POSTGRES_DB: bugtrackerdb
+      POSTGRES_USER: buguser
+      POSTGRES_PASSWORD: bugpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
