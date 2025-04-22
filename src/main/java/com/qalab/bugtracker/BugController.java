@@ -1,21 +1,24 @@
 package com.qalab.bugtracker;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/bugs")
 public class BugController {
 
+    @Autowired
+    private BugReportRepository bugReportRepository;
+
     @GetMapping
-    public List<Map<String, String>> getAllBugs() {
-        return List.of(
-            Map.of("id", "1", "title", "Login issue", "status", "open"),
-            Map.of("id", "2", "title", "Crash on submit", "status", "in progress")
-        );
+    public List<BugReport> getAllBugs() {
+        return bugReportRepository.findAll();
+    }
+
+    @PostMapping
+    public BugReport createBug(@RequestBody BugReport bugReport) {
+        return bugReportRepository.save(bugReport);
     }
 }
