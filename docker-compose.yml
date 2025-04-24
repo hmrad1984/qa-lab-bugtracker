@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: bugtracker
     ports:
       - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data 
     networks:
       - qalab-network
   backend:
@@ -28,3 +30,7 @@ services:
 networks:
   qalab-network:
     driver: bridge
+
+volumes:
+  postgres-data:
+
