@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   db:
-    image: postgres:latest
+    image: postgres:14.9
     container_name: qalab-postgres
     environment:
       POSTGRES_USER: qalab
@@ -13,17 +13,25 @@ services:
       - postgres-data:/var/lib/postgresql/data 
     networks:
       - qalab-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qalab -d bugtracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 10 
+
   backend:
     image: bugtracker
     container_name: bugtracker-app
+    build: .
     ports:
       - "8080:8080"
-    depends_on:
-      - db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://qalab-postgres:5432/bugtracker
       SPRING_DATASOURCE_USERNAME: qalab
       SPRING_DATASOURCE_PASSWORD: qalab123
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - qalab-network
 
@@ -33,4 +41,3 @@ networks:
 
 volumes:
   postgres-data:
-
