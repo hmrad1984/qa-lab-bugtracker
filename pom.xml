@@ -70,6 +70,20 @@
     <version>6.2.0.Final</version> <!-- or the latest version -->
 </dependency>
 
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-core</artifactId>
+    <version>10.15.0</version> <!-- Super fresh! -->
+</dependency>
+
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-database-postgresql</artifactId>
+    <version>10.15.0</version> <!-- Match the version of flyway-core -->
+</dependency>
+
+
+
 
 
 	</dependencies>
