@@ -1,7 +1,11 @@
-package com.qalab.bugtracker;
+package com.qalab.bugtracker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.qalab.bugtracker.model.BugReport;
+import com.qalab.bugtracker.repository.BugReportRepository;
+
 import org.springframework.validation.annotation.Validated;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;

@@ -1,4 +1,4 @@
-package com.qalab.bugtracker;
+package com.qalab.bugtracker.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
