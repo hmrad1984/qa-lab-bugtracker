@@ -2,7 +2,11 @@ package com.qalab.bugtracker.controller;
 
 import com.qalab.bugtracker.model.SampleEntity;
 import com.qalab.bugtracker.repository.SampleRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
@@ -22,7 +26,8 @@ public class SampleController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public SampleEntity createSample(@RequestBody SampleEntity sample) {
-        return sampleRepository.save(sample);
+    return sampleRepository.save(sample);
     }
 }
