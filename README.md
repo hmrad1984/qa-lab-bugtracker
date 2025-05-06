@@ -39,5 +39,5 @@ This project simulates a **bug tracking system** and includes a fully automated 
 ### Clone the repo
 
 ```bash
-git clone https://github.com/<your-username>/qalab-bugtracker.git
+git clone https://github.com/hmrad1984/qalab-bugtracker.git
 cd qalab-bugtracker
