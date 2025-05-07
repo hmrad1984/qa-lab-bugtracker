@@ -1,4 +1,4 @@
-# 🧪 QA Lab – Bug Tracker Sandbox
+# 🧪 QA Lab – Bug Tracker Sandbox test
 
 Welcome to the QA Lab — a clean, containerized playground for testing real-world quality assurance workflows in a modern Java + Spring Boot microservice environment.
 
