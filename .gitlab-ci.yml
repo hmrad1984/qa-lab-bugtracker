@@ -23,8 +23,9 @@ stages:
 test:
   stage: test
   script:
-    - echo "Starting Maven tests with Testcontainers + PostgreSQL..."
-    - mvn clean test
+    - echo "Running tests with coverage..."
+    - mvn clean verify
+  coverage: '/Total.*?([0-9]{1,3})%/'
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
