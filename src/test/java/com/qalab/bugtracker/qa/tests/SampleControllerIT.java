@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = SampleControllerTest.Initializer.class)
-public class SampleControllerTest {
+@ContextConfiguration(initializers = SampleControllerIT.Initializer.class)
+public class SampleControllerIT {
 
     @Container
     static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:14")
