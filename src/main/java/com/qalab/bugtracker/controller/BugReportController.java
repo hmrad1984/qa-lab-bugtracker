@@ -29,4 +29,12 @@ public class BugReportController {
         List<BugReport> reports = bugReportService.getAllBugReports();
         return ResponseEntity.ok(reports);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BugReport> getBugReportById(@PathVariable Long id) {
+        return bugReportService.getBugReportById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }

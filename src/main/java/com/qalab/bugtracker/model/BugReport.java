@@ -1,18 +1,12 @@
 package com.qalab.bugtracker.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
 @Entity
+@Table(name = "bug_report") // Optional, but recommended for clarity
 public class BugReport {
 
     @Id
@@ -30,12 +24,18 @@ public class BugReport {
     @NotEmpty(message = "Status is required")
     private String status;
 
-    public BugReport() {}
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Severity is required")
+    private Severity severity;
 
-    public BugReport(String title, String description, String status) {
+    public BugReport() {
+    }
+
+    public BugReport(String title, String description, String status, Severity severity) {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.severity = severity;
     }
 
     public Long getId() {
@@ -54,6 +54,10 @@ public class BugReport {
         return status;
     }
 
+    public Severity getSeverity() {
+        return severity;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -65,4 +69,13 @@ public class BugReport {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setSeverity(Severity severity) {
+        this.severity = severity;
+    }
+
+    public enum Severity {
+        LOW, MEDIUM, HIGH
+    }
+
 }

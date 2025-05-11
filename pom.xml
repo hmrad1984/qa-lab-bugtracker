@@ -22,7 +22,8 @@
 		<flyway.version>10.15.0</flyway.version>
 		<testcontainers.version>1.19.3</testcontainers.version>
 		<junit.jupiter.version>5.10.0</junit.jupiter.version>
-	</properties>
+    <spring-boot.version>3.4.4</spring-boot.version>
+  </properties>
 
 <dependencies>
     <!-- Spring Boot Starters -->
@@ -92,6 +93,13 @@
         <groupId>org.testcontainers</groupId>
         <artifactId>junit-jupiter</artifactId>
         <version>${testcontainers.version}</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-testcontainers</artifactId>
+        <version>${spring-boot.version}</version> <!-- e.g. 3.2.5 -->
         <scope>test</scope>
     </dependency>
 

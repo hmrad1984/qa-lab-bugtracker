@@ -2,9 +2,11 @@ package com.qalab.bugtracker.service;
 
 import com.qalab.bugtracker.model.BugReport;
 import com.qalab.bugtracker.repository.BugReportRepository;
+import com.qalab.bugtracker.service.BugReportService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BugReportServiceImpl implements BugReportService {
@@ -23,5 +25,10 @@ public class BugReportServiceImpl implements BugReportService {
     @Override
     public List<BugReport> getAllBugReports() {
         return bugReportRepository.findAll();
+    }
+
+    @Override
+    public Optional<BugReport> getBugReportById(Long id) {
+        return bugReportRepository.findById(id);
     }
 }

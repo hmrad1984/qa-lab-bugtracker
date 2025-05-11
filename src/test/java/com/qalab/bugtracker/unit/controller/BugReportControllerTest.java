@@ -2,6 +2,7 @@ package com.qalab.bugtracker.unit.controller;
 
 import com.qalab.bugtracker.controller.BugReportController;
 import com.qalab.bugtracker.model.BugReport;
+import com.qalab.bugtracker.model.BugReport.Severity;
 import com.qalab.bugtracker.service.BugReportService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.lang.reflect.Field;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,11 +40,11 @@ class BugReportControllerTest {
         Mockito.when(bugReportService.saveBugReport(any(BugReport.class))).thenReturn(mockBug);
 
         String requestBody = """
-            {
-                "title": "Sample bug",
-                "description": "Bug description"
-            }
-        """;
+                    {
+                        "title": "Sample bug",
+                        "description": "Bug description"
+                    }
+                """;
 
         mockMvc.perform(post("/api/bugs")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -62,5 +65,43 @@ class BugReportControllerTest {
         mockMvc.perform(get("/api/bugs"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void shouldReturnBugReportById() throws Exception {
+        // Given
+        Long bugId = 1L;
+        BugReport bugReport = new BugReport("Sample Bug", "This is a sample bug description.", "open", Severity.HIGH);
+
+        // Use reflection to set the id field since it's auto-generated and no setter is
+        // available
+        Field idField = BugReport.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(bugReport, bugId);
+
+        Mockito.when(bugReportService.getBugReportById(bugId)).thenReturn(Optional.of(bugReport));
+
+        // When & Then
+        mockMvc.perform(get("/api/bugs/{id}", bugId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(bugId))
+                .andExpect(jsonPath("$.title").value("Sample Bug"))
+                .andExpect(jsonPath("$.description").value("This is a sample bug description."))
+                .andExpect(jsonPath("$.status").value("open"))
+                .andExpect(jsonPath("$.severity").value("HIGH"));
+    }
+
+    @Test
+    void shouldReturnNotFoundForNonExistingBugReport() throws Exception {
+        // Given
+        Long bugId = 999L;
+
+        Mockito.when(bugReportService.getBugReportById(bugId)).thenReturn(Optional.empty());
+
+        // When & Then
+        mockMvc.perform(get("/api/bugs/{id}", bugId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
