@@ -1,14 +1,11 @@
 image: maven:3.9.5-eclipse-temurin-17
 
-variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  MAVEN_CLI_OPTS: "-B -e -V"
-  GIT_DEPTH: 0  # Ensure complete history for versioning if needed
+services:
+  - docker:dind
 
-cache:
-  paths:
-    - .m2/repository
-    - target/
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
 
 stages:
   - build
@@ -39,6 +36,9 @@ unit_tests:
 
 integration_tests:
   stage: test
+  services:
+    - name: docker:dind
+      alias: docker
   script:
     - mvn $MAVEN_CLI_OPTS verify
   artifacts:
