@@ -16,7 +16,8 @@ stages:
   - report
 
 before_script:
-  - echo "Using Maven version: $(mvn -v | head -n 1)"
+  - echo "Using Maven version:"
+  - mvn -v | head -n 1
 
 build:
   stage: build
