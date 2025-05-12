@@ -1,38 +1,69 @@
-# .gitlab-ci.yml
-
-image: maven:3.9.4-eclipse-temurin-17
-
-services:
-  - docker:24.0.2-dind
-  - postgres:14
+image: maven:3.9.5-eclipse-temurin-17
 
 variables:
-  POSTGRES_DB: testdb
-  POSTGRES_USER: testuser
-  POSTGRES_PASSWORD: testpass
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_TLS_CERTDIR: ""
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/testdb"
-  SPRING_DATASOURCE_USERNAME: "testuser"
-  SPRING_DATASOURCE_PASSWORD: "testpass"
+  MAVEN_CLI_OPTS: "-B -e -V"
+  GIT_DEPTH: 0  # Ensure complete history for versioning if needed
+
+cache:
+  paths:
+    - .m2/repository
+    - target/
 
 stages:
+  - build
   - test
+  - report
 
-test:
+before_script:
+  - echo "Using Maven version: $(mvn -v | head -n 1)"
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS clean compile
+  artifacts:
+    paths:
+      - target/
+
+unit_tests:
   stage: test
   script:
-    - mvn clean verify
-    - echo "==== Coverage Report ===="
-    - cat target/site/jacoco/index.html | grep -A 1 "Total"
-  coverage: '/Total.*?([0-9]{1,3})%/'
+    - mvn $MAVEN_CLI_OPTS test
+  artifacts:
+    reports:
+      junit: target/surefire-reports/*.xml
+    paths:
+      - target/jacoco-ut.exec
+      - target/surefire-reports/
+    when: always
+
+integration_tests:
+  stage: test
+  services:
+    - name: docker:dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - mvn $MAVEN_CLI_OPTS verify -Dskip.unit.tests=false
+  artifacts:
+    reports:
+      junit: target/failsafe-reports/*.xml
+    paths:
+      - target/jacoco-it.exec
+      - target/failsafe-reports/
+    when: always
+
+coverage_report:
+  stage: report
+  script:
+    - mvn $MAVEN_CLI_OPTS jacoco:merge jacoco:report
   artifacts:
     paths:
       - target/site/jacoco/
-    expire_in: 1 week    
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - .m2/repository
-  
+    when: always
+  only:
+    - main
+    - merge_requests
