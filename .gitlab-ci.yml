@@ -32,8 +32,6 @@ unit_tests:
   script:
     - mvn $MAVEN_CLI_OPTS test
   artifacts:
-    reports:
-      junit: target/surefire-reports/*.xml
     paths:
       - target/jacoco-ut.exec
       - target/surefire-reports/
@@ -41,17 +39,9 @@ unit_tests:
 
 integration_tests:
   stage: test
-  services:
-    - name: docker:dind
-      alias: docker
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_TLS_CERTDIR: ""
   script:
-    - mvn $MAVEN_CLI_OPTS verify -Dskip.unit.tests=false
+    - mvn $MAVEN_CLI_OPTS verify
   artifacts:
-    reports:
-      junit: target/failsafe-reports/*.xml
     paths:
       - target/jacoco-it.exec
       - target/failsafe-reports/
@@ -59,6 +49,9 @@ integration_tests:
 
 coverage_report:
   stage: report
+  dependencies:
+    - unit_tests
+    - integration_tests
   script:
     - mvn $MAVEN_CLI_OPTS jacoco:merge jacoco:report
   artifacts:
