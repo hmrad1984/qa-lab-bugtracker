@@ -127,23 +127,18 @@
       <executions>
           <!-- Merge Coverage Reports -->
           <execution>
-              <id>merge-exec</id>
-              <phase>verify</phase>
-              <goals>
-                  <goal>merge</goal>
-              </goals>
-              <configuration>
-                  <fileSets>
-                      <fileSet>
-                          <directory>${project.build.directory}</directory>
-                          <includes>
-                              <include>jacoco-ut.exec</include>
-                              <include>jacoco-it.exec</include>
-                          </includes>
-                      </fileSet>
-                  </fileSets>
-                  <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
-              </configuration>
+            <id>merge-exec</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>${project.build.directory}/jacoco-ut.exec</file>
+                <file>${project.build.directory}/jacoco-it.exec</file>
+              </files>
+              <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+            </configuration>
           </execution>
       </executions>
   </plugin>
