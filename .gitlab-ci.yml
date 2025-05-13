@@ -1,20 +1,26 @@
 image: maven:3.9.5-eclipse-temurin-17
 
 services:
-  - docker:dind
+  - name: docker:24.0.2-dind
+    alias: docker
 
 variables:
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_TLS_CERTDIR: ""
+  MAVEN_CLI_OPTS: "-B -Dmaven.repo.local=.m2/repository"
 
 stages:
   - build
   - test
   - report
 
+cache:
+  paths:
+    - .m2/repository
+
 before_script:
-  - echo "Using Maven version:"
-  - mvn -v | head -n 1
+  - apt-get update && apt-get install -y docker.io  # Ensures Docker CLI is available
+  - docker info || echo "Docker not available"
 
 build:
   stage: build
@@ -27,7 +33,7 @@ build:
 unit_tests:
   stage: test
   script:
-    - mvn $MAVEN_CLI_OPTS test
+    - mvn $MAVEN_CLI_OPTS test -Djacoco.destFile=target/jacoco-ut.exec
   artifacts:
     paths:
       - target/jacoco-ut.exec
@@ -36,11 +42,8 @@ unit_tests:
 
 integration_tests:
   stage: test
-  services:
-    - name: docker:dind
-      alias: docker
   script:
-    - mvn $MAVEN_CLI_OPTS verify
+    - mvn $MAVEN_CLI_OPTS verify -Djacoco.destFile=target/jacoco-it.exec
   artifacts:
     paths:
       - target/jacoco-it.exec
@@ -53,7 +56,10 @@ coverage_report:
     - unit_tests
     - integration_tests
   script:
-    - mvn $MAVEN_CLI_OPTS jacoco:merge jacoco:report
+    - |
+      mvn $MAVEN_CLI_OPTS jacoco:merge \
+        -Djacoco.exec.files=target/jacoco-ut.exec,target/jacoco-it.exec
+      mvn $MAVEN_CLI_OPTS jacoco:report
   artifacts:
     paths:
       - target/site/jacoco/
