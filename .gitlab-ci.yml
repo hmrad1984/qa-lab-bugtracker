@@ -56,13 +56,19 @@ coverage_report:
     - unit_tests
     - integration_tests
   script:
+    - echo "🔍 Verifying JaCoCo files before merge:"
+    - ls -lh target/*.exec || true
+    - echo "📊 Running verify to merge and generate report"
     - mvn $MAVEN_CLI_OPTS verify
-    - mvn $MAVEN_CLI_OPTS jacoco:report -Djacoco.dataFile=target/jacoco-merged.exec
+    - echo "📂 Listing final coverage output:"
+    - ls -lh target/site/jacoco || true
   artifacts:
     paths:
-      - target/site/jacoco/
+      - target/site/jacoco
     when: always
   only:
     - main
     - merge_requests
+
+
 
