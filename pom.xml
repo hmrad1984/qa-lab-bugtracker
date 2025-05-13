@@ -133,10 +133,14 @@
               <goal>merge</goal>
             </goals>
             <configuration>
-              <files>
-                <file>${project.build.directory}/jacoco-ut.exec</file>
-                <file>${project.build.directory}/jacoco-it.exec</file>
-              </files>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>jacoco-*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
               <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
             </configuration>
           </execution>

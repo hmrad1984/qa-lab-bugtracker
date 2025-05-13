@@ -56,10 +56,9 @@ coverage_report:
     - unit_tests
     - integration_tests
   script:
-    - |
-      mvn $MAVEN_CLI_OPTS jacoco:merge \
-        -Djacoco.exec.files=target/jacoco-ut.exec,target/jacoco-it.exec
-      mvn $MAVEN_CLI_OPTS jacoco:report
+  - mvn $MAVEN_CLI_OPTS jacoco:merge
+  - mvn $MAVEN_CLI_OPTS jacoco:report -Djacoco.dataFile=target/jacoco-merged.exec
+
   artifacts:
     paths:
       - target/site/jacoco/
