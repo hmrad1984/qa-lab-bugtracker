@@ -1,43 +1,93 @@
-# 🧪 QA Lab – Bug Tracker Sandbox test
+# QA Lab: Bug Tracker
 
-Welcome to the QA Lab — a clean, containerized playground for testing real-world quality assurance workflows in a modern Java + Spring Boot microservice environment.
-
-This project simulates a **bug tracking system** and includes a fully automated backend setup designed to support:
-
-- 🚀 Test Automation
-- 🐳 Docker-based Environments
-- 🧬 Flyway Database Migrations
-- 🔍 Integration Testing with Testcontainers
+A professional-grade QA Lab project designed to simulate real-world test architecture and automation practices. Built using **Spring Boot**, **PostgreSQL**, **Flyway**, **Docker**, **Testcontainers**, and **JaCoCo**, this application provides a hands-on platform for exploring advanced quality assurance methodologies.
 
 ---
 
-## 📦 Tech Stack
+## Features
 
-| Layer         | Tool / Framework              |
-|---------------|-------------------------------|
-| Language      | Java 17                       |
-| Backend       | Spring Boot                   |
-| Database      | PostgreSQL (via Testcontainers in tests) |
-| Migration     | Flyway                        |
-| Build Tool    | Maven                         |
-| Testing       | JUnit 5, Testcontainers, AssertJ |
-| Containerization | Docker, Docker Compose     |
+- **Spring Boot** backend for a simple bug tracking system.
+- **RESTful API** with endpoints for bug report creation and retrieval.
+- **PostgreSQL** database with schema versioning via **Flyway**.
+- **Unit tests** using JUnit & Spring Boot Test.
+- **Integration tests** with Testcontainers and Maven Failsafe.
+- **Test coverage** reporting via JaCoCo (merged from unit & integration tests).
+- **GitLab CI/CD pipeline** with build, test, and coverage stages.
 
 ---
 
-## 🧰 Key Features
+## Project Structure
 
-- **Clean Architecture**: Built with separation of concerns in mind.
-- **Flyway Integration**: DB migrations are version-controlled and automatically applied.
-- **Testcontainers Support**: Integration tests run against real PostgreSQL containers.
-- **CI-Ready Structure**: Ideal for building pipelines around.
+src
+├── main
+│ ├── java/com/qalab/bugtracker
+│ └── resources
+│ └── db/migration # Flyway scripts
+├── test
+│ ├── java/com/qalab/bugtracker/qa/tests
+│ │ ├── unit # Unit tests
+│ │ └── integration # Integration tests
+│ └── resources
+└── Dockerfile / docker-compose.yml
 
 ---
 
-## 🚀 Getting Started
+## Run Locally
 
-### Clone the repo
+### Option 1: Docker Compose
 
 ```bash
-git clone https://github.com/hmrad1984/qalab-bugtracker.git
-cd qalab-bugtracker
+docker-compose up --build
+
+Access: http://localhost:8080
+
+### Option 2: Maven Spring Boot
+
+mvn spring-boot:run
+
+Testing
+
+Unit Tests
+mvn test
+
+Integration Tests
+mvn verify
+
+Code Coverage
+Merged report available at:
+target/site/jacoco/index.html
+
+CI/CD Pipeline (GitLab)
+Build Stage: Compile the app
+
+Test Stage: Run unit and integration tests
+
+Report Stage: Merge .exec files and generate JaCoCo report
+
+All executed automatically on every push to main or in merge requests.
+
+Technologies
+Java 17
+
+Spring Boot 3
+
+PostgreSQL
+
+Flyway
+
+JUnit 5
+
+Testcontainers
+
+Docker
+
+Maven + JaCoCo
+
+GitLab CI/CD
+
+License
+MIT
+
+Author
+QA Lab by hmrad1984
+Focused on continuous quality and modern test strategies.
