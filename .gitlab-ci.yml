@@ -50,6 +50,17 @@ integration_tests:
       - target/failsafe-reports/
     when: always
 
+rest_assured_tests:
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS verify -Dtest=*ApiTest -Djacoco.destFile=target/jacoco-api.exec
+  artifacts:
+    paths:
+      - target/jacoco-api.exec
+      - target/failsafe-reports/
+    when: always
+
+
 coverage_report:
   stage: report
   dependencies:
