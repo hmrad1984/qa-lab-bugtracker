@@ -13,6 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -102,4 +103,14 @@ class BugReportApiTest {
                 .body("id", equalTo(testBugId));
     }
 
+    @Test
+    void shouldMatchBugReportSchema() {
+        given()
+                .when()
+                .get("/api/bugs/1")
+                .then()
+                .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("schemas/bug-report-schema.json"));
+
+    }
 }
