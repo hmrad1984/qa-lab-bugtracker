@@ -1,93 +1,149 @@
-# QA Lab: Bug Tracker
+# Bug Tracker QA Lab 🐛
 
-A professional-grade QA Lab project designed to simulate real-world test architecture and automation practices. Built using **Spring Boot**, **PostgreSQL**, **Flyway**, **Docker**, **Testcontainers**, and **JaCoCo**, this application provides a hands-on platform for exploring advanced quality assurance methodologies.
+A comprehensive QA testing project demonstrating best practices in test automation using Spring Boot, Testcontainers, and various testing frameworks.
 
----
+## 🎯 Project Overview
 
-## Features
+This project serves as a QA laboratory for implementing and demonstrating different testing strategies in a Spring Boot application. It includes a bug tracking REST API with various test implementations showcasing:
 
-- **Spring Boot** backend for a simple bug tracking system.
-- **RESTful API** with endpoints for bug report creation and retrieval.
-- **PostgreSQL** database with schema versioning via **Flyway**.
-- **Unit tests** using JUnit & Spring Boot Test.
-- **Integration tests** with Testcontainers and Maven Failsafe.
-- **Test coverage** reporting via JaCoCo (merged from unit & integration tests).
-- **GitLab CI/CD pipeline** with build, test, and coverage stages.
+- Unit Testing
+- Integration Testing
+- API Testing
+- Container-based Testing
+- Test Data Management
 
----
+## 🛠 Tech Stack
 
-## Project Structure
+- **Framework:** Spring Boot 3.x
+- **Language:** Java 17
+- **Database:** PostgreSQL
+- **Testing Frameworks:**
+  - JUnit Jupiter (JUnit 5)
+  - Testcontainers
+  - REST Assured
+  - MockMvc
+- **Build Tool:** Maven
+- **Database Migration:** Flyway
+- **Containerization:** Docker
 
-src
-├── main
-│ ├── java/com/qalab/bugtracker
-│ └── resources
-│ └── db/migration # Flyway scripts
-├── test
-│ ├── java/com/qalab/bugtracker/qa/tests
-│ │ ├── unit # Unit tests
-│ │ └── integration # Integration tests
-│ └── resources
-└── Dockerfile / docker-compose.yml
+## 🚀 Getting Started
 
----
+### Prerequisites
 
-## Run Locally
+- Java 17 or higher
+- Maven 3.6+
+- Docker (for running Testcontainers)
+- PostgreSQL (for local development)
 
-### Option 1: Docker Compose
+### Setup
 
-```bash
-docker-compose up --build
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/qalab-bugtracker.git
+   cd qalab-bugtracker
+   ```
 
-Access: http://localhost:8080
+2. Build the project:
+   ```bash
+   mvn clean install
+   ```
 
-### Option 2: Maven Spring Boot
+3. Run the tests:
+   ```bash
+   mvn verify
+   ```
 
-mvn spring-boot:run
+## 🧪 Testing Strategy
 
-Testing
+### 1. Unit Tests
+Located in `src/test/java/com/qalab/bugtracker/unit/`
+- Controller unit tests with MockMvc
+- Isolated testing with mocked dependencies
+- Fast execution for quick feedback
 
-Unit Tests
-mvn test
+### 2. Integration Tests
+Located in `src/test/java/com/qalab/bugtracker/qa/tests/`
+- End-to-end testing with real database
+- Testcontainers for isolated database testing
+- Full Spring context testing
 
-Integration Tests
-mvn verify
+### 3. API Tests
+- REST Assured for API testing
+- HTTP response validation
+- JSON payload verification
 
-Code Coverage
-Merged report available at:
-target/site/jacoco/index.html
+### 4. Test Data Management
+- Flyway migrations for test data
+- Containerized database per test
+- Isolated test environments
 
-CI/CD Pipeline (GitLab)
-Build Stage: Compile the app
+## 📁 Project Structure
 
-Test Stage: Run unit and integration tests
+```
+src/
+├── main/
+│   ├── java/
+│   │   └── com/qalab/bugtracker/
+│   │       ├── controller/
+│   │       ├── model/
+│   │       └── repository/
+│   └── resources/
+│       └── application.properties
+└── test/
+    ├── java/
+    │   └── com/qalab/bugtracker/
+    │       ├── unit/
+    │       │   └── controller/
+    │       └── qa/
+    │           └── tests/
+    └── resources/
+        ├── application-test.yml
+        └── db/migration/
+```
 
-Report Stage: Merge .exec files and generate JaCoCo report
+## 🔍 Test Examples
 
-All executed automatically on every push to main or in merge requests.
+### Unit Test Example
+```java
+@WebMvcTest(BugReportController.class)
+class BugReportControllerTest {
+    @Test
+    void shouldReturnListOfBugs() {
+        // Test implementation
+    }
+}
+```
 
-Technologies
-Java 17
+### Integration Test Example
+```java
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@Testcontainers
+class BugReportControllerIT {
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>();
+    
+    @Test
+    void testGetAllBugReports() {
+        // Test implementation
+    }
+}
+```
 
-Spring Boot 3
+## 🤝 Contributing
 
-PostgreSQL
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Flyway
+## 📝 License
 
-JUnit 5
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Testcontainers
+## ✨ Acknowledgments
 
-Docker
-
-Maven + JaCoCo
-
-GitLab CI/CD
-
-License
-MIT
-
-Author
-QA Lab by hmrad1984
-Focused on continuous quality and modern test strategies.
+- Spring Boot Testing Documentation
+- Testcontainers Documentation
+- REST Assured Documentation
+- JUnit 5 User Guide

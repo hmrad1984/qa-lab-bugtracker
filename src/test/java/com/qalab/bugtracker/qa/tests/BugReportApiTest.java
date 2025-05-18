@@ -49,4 +49,57 @@ class BugReportApiTest {
                 .statusCode(200)
                 .body("size()", greaterThanOrEqualTo(0)); // Adjust as needed
     }
+
+    @Test
+    void shouldCreateNewBugReport() {
+        String newBug = """
+                {
+                    "title": "UI not responsive",
+                    "description": "Button click does not register",
+                    "status": "OPEN",
+                    "severity": "HIGH"
+                }
+                """;
+
+        given()
+                .header("Content-Type", "application/json")
+                .body(newBug)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue())
+                .body("title", equalTo("UI not responsive"));
+    }
+
+    @Test
+    void shouldRejectInvalidBugReport() {
+        String invalidBug = """
+                {
+                    "title": "",
+                    "description": "",
+                    "status": "INVALID_STATUS",
+                    "severity": "EXTREME"
+                }
+                """;
+
+        given()
+                .header("Content-Type", "application/json")
+                .body(invalidBug)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(400); // Adjust depending on your validation setup
+    }
+
+    @Test
+    void shouldReturnBugById() {
+        int testBugId = 1; // Replace with a valid ID from your test data
+        when()
+                .get("/api/bugs/{id}", testBugId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(testBugId));
+    }
+
 }
