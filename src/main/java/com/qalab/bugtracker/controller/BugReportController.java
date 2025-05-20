@@ -2,6 +2,9 @@ package com.qalab.bugtracker.controller;
 
 import com.qalab.bugtracker.model.BugReport;
 import com.qalab.bugtracker.service.BugReportService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ public class BugReportController {
     }
 
     @PostMapping
-    public ResponseEntity<BugReport> createBugReport(@RequestBody BugReport bugReport) {
+    public ResponseEntity<BugReport> createBugReport(@Valid @RequestBody BugReport bugReport) {
         BugReport savedReport = bugReportService.saveBugReport(bugReport);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReport);
     }

@@ -1,5 +1,7 @@
 package com.qalab.bugtracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +9,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "bug_report") // Optional, but recommended for clarity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BugReport {
 
     @Id

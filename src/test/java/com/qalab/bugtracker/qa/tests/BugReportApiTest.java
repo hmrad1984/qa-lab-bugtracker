@@ -113,4 +113,151 @@ class BugReportApiTest {
                 .body(matchesJsonSchemaInClasspath("schemas/bug-report-schema.json"));
 
     }
+
+    @Test
+    void shouldReturn404ForNonExistentBugReport() {
+        given()
+                .when()
+                .get("/api/bugs/9999")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    void shouldReturn400ForInvalidPostPayload() {
+        String invalidJson = "{ \"title\": \"Missing fields\" }"; // description/status/severity are missing
+
+        given()
+                .contentType("application/json")
+                .body(invalidJson)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void shouldReturn405ForUnsupportedMethod() {
+        given()
+                .when()
+                .patch("/api/bugs/1")
+                .then()
+                .statusCode(405);
+    }
+
+    @Test
+    void shouldReturn415ForUnsupportedContentType() {
+        given()
+                .contentType("text/plain") // Invalid content type
+                .body("Just some text")
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(415);
+    }
+
+    @Test
+    void shouldReturn400ForInvalidEnumValue() {
+        String invalidEnumPayload = """
+                {
+                  "title": "Invalid severity",
+                  "description": "Testing with wrong severity",
+                  "status": "OPEN",
+                  "severity": "CRITICAL_BROKEN"
+                }
+                """;
+
+        given()
+                .contentType("application/json")
+                .body(invalidEnumPayload)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void shouldIgnoreUnknownFieldsInPostPayload() {
+        String payload = """
+                {
+                  "title": "Bug with extra field",
+                  "description": "Extra field should be ignored",
+                  "status": "OPEN",
+                  "severity": "LOW",
+                  "hackerMode": true
+                }
+                """;
+
+        given()
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(201)
+                .body("title", equalTo("Bug with extra field"));
+    }
+
+    @Test
+    void shouldRejectEmptyTitleInPostPayload() {
+        String payload = """
+                {
+                  "title": "",
+                  "description": "Missing title",
+                  "status": "OPEN",
+                  "severity": "MAJOR"
+                }
+                """;
+
+        given()
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void shouldRejectNullDescriptionInPostPayload() {
+        String payload = """
+                {
+                  "title": "Null desc",
+                  "description": null,
+                  "status": "OPEN",
+                  "severity": "MAJOR"
+                }
+                """;
+
+        given()
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void shouldRejectTooLongTitle() {
+        String longTitle = "A".repeat(300); // Adjust based on your validation limit
+
+        String payload = String.format("""
+                {
+                  "title": "%s",
+                  "description": "Very long title test",
+                  "status": "OPEN",
+                  "severity": "MAJOR"
+                }
+                """, longTitle);
+
+        given()
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(400);
+    }
+
 }

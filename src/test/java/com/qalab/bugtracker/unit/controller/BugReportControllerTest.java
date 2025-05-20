@@ -42,7 +42,10 @@ class BugReportControllerTest {
         String requestBody = """
                     {
                         "title": "Sample bug",
-                        "description": "Bug description"
+                        "description": "Bug description",
+                        "status": "open",
+                        "severity": "HIGH"
+
                     }
                 """;
 
