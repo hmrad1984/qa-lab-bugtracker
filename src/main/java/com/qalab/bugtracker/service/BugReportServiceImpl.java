@@ -31,4 +31,17 @@ public class BugReportServiceImpl implements BugReportService {
     public Optional<BugReport> getBugReportById(Long id) {
         return bugReportRepository.findById(id);
     }
+
+    @Override
+    public List<BugReport> getFilteredBugReports(String status, String severity) {
+        if (status != null && severity != null) {
+            return bugReportRepository.findByStatusAndSeverity(status, severity);
+        } else if (status != null) {
+            return bugReportRepository.findByStatus(status);
+        } else if (severity != null) {
+            return bugReportRepository.findBySeverity(severity);
+        } else {
+            return bugReportRepository.findAll();
+        }
+    }
 }

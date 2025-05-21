@@ -41,6 +41,10 @@ class BugReportApiTest {
         RestAssured.port = port;
     }
 
+    // =====================
+    // GET Tests
+    // =====================
+
     @Test
     void shouldGetAllBugReports() {
         given()
@@ -50,6 +54,39 @@ class BugReportApiTest {
                 .statusCode(200)
                 .body("size()", greaterThanOrEqualTo(0)); // Adjust as needed
     }
+
+    @Test
+    void shouldReturnBugById() {
+        int testBugId = 1; // Replace with a valid ID from your test data
+        when()
+                .get("/api/bugs/{id}", testBugId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(testBugId));
+    }
+
+    @Test
+    void shouldMatchBugReportSchema() {
+        given()
+                .when()
+                .get("/api/bugs/1")
+                .then()
+                .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("schemas/bug-report-schema.json"));
+    }
+
+    @Test
+    void shouldReturn404ForNonExistentBugReport() {
+        given()
+                .when()
+                .get("/api/bugs/9999")
+                .then()
+                .statusCode(404);
+    }
+
+    // =====================
+    // POST Tests
+    // =====================
 
     @Test
     void shouldCreateNewBugReport() {
@@ -74,6 +111,32 @@ class BugReportApiTest {
     }
 
     @Test
+    void shouldIgnoreUnknownFieldsInPostPayload() {
+        String payload = """
+                {
+                  "title": "Bug with extra field",
+                  "description": "Extra field should be ignored",
+                  "status": "OPEN",
+                  "severity": "LOW",
+                  "hackerMode": true
+                }
+                """;
+
+        given()
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/api/bugs")
+                .then()
+                .statusCode(201)
+                .body("title", equalTo("Bug with extra field"));
+    }
+
+    // =====================
+    // Negative Tests
+    // =====================
+
+    @Test
     void shouldRejectInvalidBugReport() {
         String invalidBug = """
                 {
@@ -91,36 +154,6 @@ class BugReportApiTest {
                 .post("/api/bugs")
                 .then()
                 .statusCode(400); // Adjust depending on your validation setup
-    }
-
-    @Test
-    void shouldReturnBugById() {
-        int testBugId = 1; // Replace with a valid ID from your test data
-        when()
-                .get("/api/bugs/{id}", testBugId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(testBugId));
-    }
-
-    @Test
-    void shouldMatchBugReportSchema() {
-        given()
-                .when()
-                .get("/api/bugs/1")
-                .then()
-                .statusCode(200)
-                .body(matchesJsonSchemaInClasspath("schemas/bug-report-schema.json"));
-
-    }
-
-    @Test
-    void shouldReturn404ForNonExistentBugReport() {
-        given()
-                .when()
-                .get("/api/bugs/9999")
-                .then()
-                .statusCode(404);
     }
 
     @Test
@@ -174,28 +207,6 @@ class BugReportApiTest {
                 .post("/api/bugs")
                 .then()
                 .statusCode(400);
-    }
-
-    @Test
-    void shouldIgnoreUnknownFieldsInPostPayload() {
-        String payload = """
-                {
-                  "title": "Bug with extra field",
-                  "description": "Extra field should be ignored",
-                  "status": "OPEN",
-                  "severity": "LOW",
-                  "hackerMode": true
-                }
-                """;
-
-        given()
-                .contentType("application/json")
-                .body(payload)
-                .when()
-                .post("/api/bugs")
-                .then()
-                .statusCode(201)
-                .body("title", equalTo("Bug with extra field"));
     }
 
     @Test

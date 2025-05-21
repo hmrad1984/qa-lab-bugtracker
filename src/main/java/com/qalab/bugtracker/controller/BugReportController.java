@@ -2,9 +2,7 @@ package com.qalab.bugtracker.controller;
 
 import com.qalab.bugtracker.model.BugReport;
 import com.qalab.bugtracker.service.BugReportService;
-
 import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,4 +38,11 @@ public class BugReportController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<BugReport>> getFilteredBugReports(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String severity) {
+        List<BugReport> filtered = bugReportService.getFilteredBugReports(status, severity);
+        return ResponseEntity.ok(filtered);
+    }
 }

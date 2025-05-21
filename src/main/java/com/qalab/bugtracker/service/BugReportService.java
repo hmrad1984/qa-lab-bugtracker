@@ -11,4 +11,6 @@ public interface BugReportService {
 
     Optional<BugReport> getBugReportById(Long id);
 
+    List<BugReport> getFilteredBugReports(String status, String severity);
+
 }
