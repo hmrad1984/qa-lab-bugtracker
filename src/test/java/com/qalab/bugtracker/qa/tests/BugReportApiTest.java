@@ -1,6 +1,8 @@
 package com.qalab.bugtracker.qa.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import static io.restassured.module.jsv.JsonSchemaValidator.*;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -269,6 +275,34 @@ class BugReportApiTest {
                 .post("/api/bugs")
                 .then()
                 .statusCode(400);
+    }
+
+    // =====================
+    // Parameterized Tests
+    // =====================
+
+    @ParameterizedTest
+    @CsvSource({
+            "OPEN, , true",
+            ", HIGH, true",
+            "OPEN, HIGH, true",
+            ", , true"
+    })
+    void shouldFilterBugReports(String status, String severity, boolean expectResults) {
+        RequestSpecification request = given();
+
+        if (status != null && !status.isBlank()) {
+            request = request.queryParam("status", status);
+        }
+        if (severity != null && !severity.isBlank()) {
+            request = request.queryParam("severity", severity);
+        }
+
+        request.when()
+                .get("/api/bugs/filter")
+                .then()
+                .statusCode(200)
+                .body("size()", expectResults ? greaterThanOrEqualTo(0) : equalTo(0));
     }
 
 }

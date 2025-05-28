@@ -1,6 +1,8 @@
 package com.qalab.bugtracker.service;
 
 import com.qalab.bugtracker.model.BugReport;
+import com.qalab.bugtracker.model.BugReport.Severity;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +13,6 @@ public interface BugReportService {
 
     Optional<BugReport> getBugReportById(Long id);
 
-    List<BugReport> getFilteredBugReports(String status, String severity);
+    List<BugReport> getFilteredBugReports(String status, Severity severity);
 
 }

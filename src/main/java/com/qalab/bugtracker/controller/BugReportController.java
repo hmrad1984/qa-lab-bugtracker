@@ -1,11 +1,13 @@
 package com.qalab.bugtracker.controller;
 
 import com.qalab.bugtracker.model.BugReport;
+import com.qalab.bugtracker.model.BugReport.Severity;
 import com.qalab.bugtracker.service.BugReportService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -14,9 +16,12 @@ import java.util.List;
 public class BugReportController {
 
     private final BugReportService bugReportService;
+    private final com.qalab.bugtracker.repository.BugReportRepository bugReportRepository;
 
-    public BugReportController(BugReportService bugReportService) {
+    public BugReportController(BugReportService bugReportService,
+            com.qalab.bugtracker.repository.BugReportRepository bugReportRepository) {
         this.bugReportService = bugReportService;
+        this.bugReportRepository = bugReportRepository;
     }
 
     @PostMapping
@@ -39,10 +44,27 @@ public class BugReportController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<BugReport>> getFilteredBugReports(
+    public List<BugReport> getBugReports(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String severity) {
-        List<BugReport> filtered = bugReportService.getFilteredBugReports(status, severity);
-        return ResponseEntity.ok(filtered);
+        try {
+            // Treat blank as null
+            if (status != null && status.isBlank())
+                status = null;
+            if (severity != null && severity.isBlank())
+                severity = null;
+
+            if (status != null && severity != null) {
+                return bugReportRepository.findByStatusAndSeverity(status, Severity.valueOf(severity.toUpperCase()));
+            } else if (status != null) {
+                return bugReportRepository.findByStatus(status);
+            } else if (severity != null) {
+                return bugReportRepository.findBySeverity(Severity.valueOf(severity.toUpperCase()));
+            }
+            return bugReportRepository.findAll();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid filter input", e);
+        }
     }
+
 }

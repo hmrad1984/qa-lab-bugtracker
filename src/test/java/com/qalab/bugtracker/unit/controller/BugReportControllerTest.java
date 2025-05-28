@@ -4,6 +4,7 @@ import com.qalab.bugtracker.controller.BugReportController;
 import com.qalab.bugtracker.model.BugReport;
 import com.qalab.bugtracker.model.BugReport.Severity;
 import com.qalab.bugtracker.service.BugReportService;
+import com.qalab.bugtracker.repository.BugReportRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,11 +32,16 @@ class BugReportControllerTest {
     @MockBean
     private BugReportService bugReportService;
 
+    @MockBean
+    private BugReportRepository bugReportRepository;
+
     @Test
     void shouldReturnCreatedWhenBugIsPosted() throws Exception {
         BugReport mockBug = new BugReport();
         mockBug.setTitle("Sample bug");
         mockBug.setDescription("Bug description");
+        mockBug.setStatus("open");
+        mockBug.setSeverity(Severity.HIGH);
 
         Mockito.when(bugReportService.saveBugReport(any(BugReport.class))).thenReturn(mockBug);
 
@@ -59,9 +65,15 @@ class BugReportControllerTest {
     void shouldReturnListOfBugs() throws Exception {
         BugReport bug1 = new BugReport();
         bug1.setTitle("Bug A");
+        bug1.setDescription("Description for Bug A");
+        bug1.setStatus("open");
+        bug1.setSeverity(Severity.HIGH);
 
         BugReport bug2 = new BugReport();
         bug2.setTitle("Bug B");
+        bug2.setDescription("Description for Bug B");
+        bug2.setStatus("closed");
+        bug2.setSeverity(Severity.MEDIUM);
 
         Mockito.when(bugReportService.getAllBugReports()).thenReturn(Arrays.asList(bug1, bug2));
 
