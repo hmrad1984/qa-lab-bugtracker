@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Login page crash",
+    "description": "NullPointerException when submitting empty form",
+    "status": "OPEN",
+    "severity": "HIGH"
+  },
+  {
+    "title": "Missing alt text",
+    "description": "Images lack accessibility attributes",
+    "status": "OPEN",
+    "severity": "LOW"
+  }
+]
