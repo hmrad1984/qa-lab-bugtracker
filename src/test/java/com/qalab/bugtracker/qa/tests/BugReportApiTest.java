@@ -31,6 +31,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.qalab.bugtracker.qa.model.BugReportDTO;
 
+import com.qalab.bugtracker.qa.model.BugReportTestCase;
+import com.qalab.bugtracker.qa.utils.TestDataLoader;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import static io.restassured.RestAssured.*;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 class BugReportApiTest {
@@ -315,6 +321,10 @@ class BugReportApiTest {
                                 .body("size()", expectResults ? greaterThanOrEqualTo(0) : equalTo(0));
         }
 
+        // =====================
+        // Parameterized Tests from External JSON Data
+        // =====================
+
         @Test
         void shouldCreateBugReportsFromJsonData() throws Exception {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -337,6 +347,27 @@ class BugReportApiTest {
                                         .body("status", equalTo(dto.getStatus()))
                                         .body("severity", equalTo(dto.getSeverity()));
                 }
+        }
+
+        // =====================
+        // Parameterized Tests from External Data + expected results in JSON
+        // =====================
+
+        static List<BugReportTestCase> bugReportTestCases() throws Exception {
+                return TestDataLoader.loadBugReportTestData();
+        }
+
+        @ParameterizedTest
+        @MethodSource("bugReportTestCases")
+        void shouldCreateBugReport_fromExternalData(BugReportTestCase testCase) {
+                given()
+                                .contentType("application/json")
+                                .body(testCase)
+                                .when()
+                                .post("/api/bugs")
+                                .then()
+                                .statusCode(testCase.getExpectedStatus())
+                                .body("title", containsString(testCase.getExpectedFragment()));
         }
 
 }
