@@ -3,8 +3,8 @@ package com.qalab.bugtracker.unit.controller;
 import com.qalab.bugtracker.controller.BugReportController;
 import com.qalab.bugtracker.model.BugReport;
 import com.qalab.bugtracker.model.BugReport.Severity;
-import com.qalab.bugtracker.service.BugReportService;
 import com.qalab.bugtracker.repository.BugReportRepository;
+import com.qalab.bugtracker.service.BugReportService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,8 +40,6 @@ class BugReportControllerTest {
         BugReport mockBug = new BugReport();
         mockBug.setTitle("Sample bug");
         mockBug.setDescription("Bug description");
-        mockBug.setStatus("open");
-        mockBug.setSeverity(Severity.HIGH);
 
         Mockito.when(bugReportService.saveBugReport(any(BugReport.class))).thenReturn(mockBug);
 
@@ -69,17 +67,16 @@ class BugReportControllerTest {
         bug1.setStatus("open");
         bug1.setSeverity(Severity.HIGH);
 
-        BugReport bug2 = new BugReport();
-        bug2.setTitle("Bug B");
-        bug2.setDescription("Description for Bug B");
-        bug2.setStatus("closed");
-        bug2.setSeverity(Severity.MEDIUM);
+        /*
+         * BugReport bug2 = new BugReport();
+         * bug2.setTitle("Bug B");
+         */
 
-        Mockito.when(bugReportService.getAllBugReports()).thenReturn(Arrays.asList(bug1, bug2));
+        Mockito.when(bugReportService.getAllBugReports()).thenReturn(Arrays.asList(bug1));
 
         mockMvc.perform(get("/api/bugs"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test

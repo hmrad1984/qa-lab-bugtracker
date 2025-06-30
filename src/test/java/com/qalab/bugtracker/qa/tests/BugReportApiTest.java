@@ -15,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Answers.valueOf;
 import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 import io.restassured.http.ContentType;
@@ -25,10 +26,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
-
+import com.qalab.bugtracker.model.BugReport;
 import com.qalab.bugtracker.qa.model.BugReportDTO;
 
 import com.qalab.bugtracker.qa.model.BugReportTestCase;
@@ -36,6 +38,9 @@ import com.qalab.bugtracker.qa.utils.TestDataLoader;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import static io.restassured.RestAssured.*;
+
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.qalab.bugtracker.repository.BugReportRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -345,7 +350,7 @@ class BugReportApiTest {
                                         .body("title", equalTo(dto.getTitle()))
                                         .body("description", equalTo(dto.getDescription()))
                                         .body("status", equalTo(dto.getStatus()))
-                                        .body("severity", equalTo(dto.getSeverity()));
+                                        .body("severity", equalTo(dto.getSeverity().toString()));
                 }
         }
 
@@ -353,21 +358,38 @@ class BugReportApiTest {
         // Parameterized Tests from External Data + expected results in JSON
         // =====================
 
-        static List<BugReportTestCase> bugReportTestCases() throws Exception {
-                return TestDataLoader.loadBugReportTestData();
+        @ParameterizedTest(name = "{0}")
+        @MethodSource("bugReportTestData")
+        void shouldCreateBugReport(BugReportTestCase testCase) {
+                BugReport bugReport = new BugReport();
+                bugReport.setTitle(testCase.getTitle());
+                bugReport.setDescription(testCase.getDescription());
+                bugReport.setStatus(testCase.getStatus());
+                bugReport.setSeverity(BugReport.Severity.valueOf(testCase.getSeverity()));
+
+                var response = given()
+                                .contentType(ContentType.JSON)
+                                .body(bugReport)
+                                .when()
+                                .post("/api/bugs");
+                if (testCase.getExpectedStatus() == 201) {
+                        response.then()
+                                        .statusCode(testCase.getExpectedStatus())
+                                        .body(containsString(testCase.getExpectedResponseFragment()));
+                } else if (testCase.getExpectedStatus() == 400) {
+                        response.then()
+                                        .statusCode(testCase.getExpectedStatus())
+                                        .body(containsString(testCase.getExpectedResponseFragment()));
+                }
         }
 
-        @ParameterizedTest
-        @MethodSource("bugReportTestCases")
-        void shouldCreateBugReport_fromExternalData(BugReportTestCase testCase) {
-                given()
-                                .contentType("application/json")
-                                .body(testCase)
-                                .when()
-                                .post("/api/bugs")
-                                .then()
-                                .statusCode(testCase.getExpectedStatus())
-                                .body("title", containsString(testCase.getExpectedFragment()));
+        static Stream<BugReportTestCase> bugReportTestData() throws Exception {
+                ObjectMapper objectMapper = new ObjectMapper();
+                InputStream is = BugReportApiTest.class.getResourceAsStream("/testdata/bug_report_test_cases.json");
+                List<BugReportTestCase> testCases = objectMapper.readValue(is,
+                                new TypeReference<List<BugReportTestCase>>() {
+                                });
+                return testCases.stream();
         }
 
 }

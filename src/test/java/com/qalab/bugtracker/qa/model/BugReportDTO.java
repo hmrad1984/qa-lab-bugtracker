@@ -1,10 +1,14 @@
 package com.qalab.bugtracker.qa.model;
 
+import com.qalab.bugtracker.model.BugReport.Severity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+
 public class BugReportDTO {
     private String title;
     private String description;
     private String status;
-    private String severity;
+    private Severity severity;
 
     public String getTitle() {
         return title;
@@ -30,11 +34,11 @@ public class BugReportDTO {
         this.status = status;
     }
 
-    public String getSeverity() {
+    public Severity getSeverity() {
         return severity;
     }
 
-    public void setSeverity(String severity) {
+    public void setSeverity(Severity severity) {
         this.severity = severity;
     }
 

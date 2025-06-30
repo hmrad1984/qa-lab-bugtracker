@@ -1,0 +1,20 @@
+[
+  {
+    "testName": "Valid critical bug report",
+    "title": "App crashes on submit",
+    "description": "Crash on form submit with empty field",
+    "status": "OPEN",
+    "severity": "LOW",
+    "expectedStatus": 201,
+    "expectedResponseFragment": "App crashes on submit"
+  },
+  {
+    "testName": "Missing title results in error",
+    "title": null,
+    "description": "Missing title field",
+    "status": "OPEN",
+    "severity": "HIGH",
+    "expectedStatus": 400,
+    "expectedResponseFragment": "Bad Request"
+  }
+]
