@@ -145,8 +145,7 @@
   <groupId>com.fasterxml.jackson.core</groupId>
   <artifactId>jackson-databind</artifactId>
   <version>2.17.0</version>
-  <scope>test</scope>
-</dependency>
+ </dependency>
 
     <dependency>
         <groupId>org.projectlombok</groupId>
@@ -160,6 +159,10 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
       <!-- Unit Testing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
