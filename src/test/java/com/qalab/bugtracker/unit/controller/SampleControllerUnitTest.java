@@ -24,8 +24,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
- * Unit test for SampleController.
- * Ensures HTTP behavior is correct by mocking repository layer.
+ * Unit tests for SampleController endpoints.
  */
 @WebMvcTest(SampleController.class)
 public class SampleControllerUnitTest {

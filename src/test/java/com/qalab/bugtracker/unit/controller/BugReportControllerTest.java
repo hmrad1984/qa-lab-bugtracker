@@ -85,8 +85,7 @@ class BugReportControllerTest {
         Long bugId = 1L;
         BugReport bugReport = new BugReport("Sample Bug", "This is a sample bug description.", "open", Severity.HIGH);
 
-        // Use reflection to set the id field since it's auto-generated and no setter is
-        // available
+        // Set the id field using reflection
         Field idField = BugReport.class.getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(bugReport, bugId);
