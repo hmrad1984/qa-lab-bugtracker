@@ -39,7 +39,7 @@ This project serves as a QA laboratory for implementing and demonstrating differ
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/qalab-bugtracker.git
+   git clone https://github.com/hmrad1984/qalab-bugtracker.git
    cd qalab-bugtracker
    ```
 
