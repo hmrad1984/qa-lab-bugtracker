@@ -97,6 +97,13 @@
       <artifactId>spring-boot-testcontainers</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- H2 Database for simple testing -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Testing -->
     <dependency>
@@ -147,12 +154,20 @@
   <version>2.17.0</version>
  </dependency>
 
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.32</version>
-        <scope>provided</scope>
-    </dependency>
+<dependency>
+  <groupId>org.projectlombok</groupId>
+  <artifactId>lombok</artifactId>
+  <version>1.18.32</version>
+  <scope>provided</scope>
+</dependency>
+
+<dependency>
+  <groupId>au.com.dius.pact.provider</groupId>
+  <artifactId>junit5</artifactId>
+  <version>4.6.16</version>
+  <scope>test</scope>
+</dependency>
+
 
 
   </dependencies>

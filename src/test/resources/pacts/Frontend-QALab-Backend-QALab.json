@@ -1,0 +1,279 @@
+{
+  "consumer": {
+    "name": "Frontend-QALab"
+  },
+  "interactions": [
+    {
+      "description": "a request for bug reports",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs"
+      },
+      "response": {
+        "body": [
+          {
+            "description": "Button misaligned",
+            "id": 1,
+            "severity": "HIGH",
+            "status": "OPEN",
+            "title": "UI Bug"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[*].id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for a specific bug report by ID",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs/1"
+      },
+      "response": {
+        "body": {
+          "description": "Button misaligned on login page",
+          "id": 1,
+          "severity": "HIGH",
+          "status": "OPEN",
+          "title": "UI Bug"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for a non-existent bug report",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs/999"
+      },
+      "response": {
+        "status": 404
+      }
+    },
+    {
+      "description": "a request to create a new bug report",
+      "request": {
+        "method": "POST",
+        "path": "/api/bugs",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "New Critical Bug",
+          "description": "System crashes on startup",
+          "status": "OPEN",
+          "severity": "HIGH"
+        }
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "title": "New Critical Bug",
+          "description": "System crashes on startup",
+          "status": "OPEN",
+          "severity": "HIGH"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a request to create a bug report with invalid data",
+      "request": {
+        "method": "POST",
+        "path": "/api/bugs",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "title": "",
+          "description": "Missing title",
+          "status": "INVALID_STATUS",
+          "severity": "INVALID_SEVERITY"
+        }
+      },
+      "response": {
+        "status": 400
+      }
+    },
+    {
+      "description": "a request for bug reports filtered by status",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs",
+        "query": "status=OPEN"
+      },
+      "response": {
+        "body": [
+          {
+            "description": "Button misaligned",
+            "id": 1,
+            "severity": "HIGH",
+            "status": "OPEN",
+            "title": "UI Bug"
+          },
+          {
+            "description": "Login timeout issue",
+            "id": 2,
+            "severity": "MEDIUM",
+            "status": "OPEN",
+            "title": "Authentication Bug"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[*].id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for bug reports filtered by severity",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs",
+        "query": "severity=HIGH"
+      },
+      "response": {
+        "body": [
+          {
+            "description": "System crashes on startup",
+            "id": 1,
+            "severity": "HIGH",
+            "status": "OPEN",
+            "title": "Critical System Bug"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[*].id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for bug reports with multiple filters",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs",
+        "query": "status=CLOSED&severity=LOW"
+      },
+      "response": {
+        "body": [
+          {
+            "description": "Minor text formatting issue",
+            "id": 1,
+            "severity": "LOW",
+            "status": "CLOSED",
+            "title": "Text Format Bug"
+          }
+        ],
+        "matchingRules": {
+          "body": {
+            "$[*].id": {
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request for bug reports when none exist",
+      "request": {
+        "method": "GET",
+        "path": "/api/bugs",
+        "query": "status=IN_PROGRESS"
+      },
+      "response": {
+        "body": [],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "15.0.1"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "Backend-QALab"
+  }
+}

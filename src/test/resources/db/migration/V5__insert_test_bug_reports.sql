@@ -1,4 +1,4 @@
--- Test data for BugReportControllerIT
+-- Sample test data
 
 INSERT INTO bug_report (title, description, status, severity)
 VALUES 

@@ -31,8 +31,29 @@ public class BugReportController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BugReport>> getAllBugReports() {
-        List<BugReport> reports = bugReportService.getAllBugReports();
+    public ResponseEntity<List<BugReport>> getAllBugReports(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String severity) {
+        List<BugReport> reports;
+        
+        if (status != null || severity != null) {
+            // Handle filtering
+            Severity severityEnum = null;
+            if (severity != null && !severity.isBlank()) {
+                try {
+                    severityEnum = Severity.valueOf(severity.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid severity value: " + severity);
+                }
+            }
+            reports = bugReportService.getFilteredBugReports(
+                (status != null && !status.isBlank()) ? status.toUpperCase() : null, 
+                severityEnum
+            );
+        } else {
+            reports = bugReportService.getAllBugReports();
+        }
+        
         return ResponseEntity.ok(reports);
     }
 
